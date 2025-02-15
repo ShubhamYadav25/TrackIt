@@ -14,11 +14,11 @@ app.use(express.static(path.join(__dirname, "UI")));
 
 // Define the structure of the request body
 interface TrackRequestBody {
-  url: string;
+    url: string;
 }
 
 app.post("/track", async (req: Request<{}, {}, TrackRequestBody>, res: Response) => {
-  const { url } = req.body;
+    const { url } = req.body;
 
     if (!url) {
         // return res.status(400).json({ error: "Flipkart URL is required" });
@@ -35,9 +35,9 @@ app.post("/track", async (req: Request<{}, {}, TrackRequestBody>, res: Response)
 
 // Serve index.html when accessing root URL
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "UI", "index.html"));
+    res.sendFile(path.join(__dirname, "UI", "index.html"));
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });

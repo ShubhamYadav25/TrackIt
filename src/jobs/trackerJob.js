@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const puppeteer = require('puppeteer');
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
+const { sendPriceUpdate } = require('../producer/priceProducer.js');
 
 // Function to initialize database
 async function getDb() {
@@ -57,9 +58,16 @@ async function checkAndUpdatePrices() {
 
         const newPrice = await scrapePrice(link);
 
+        // TESTING msg to kafka
+        // await sendPriceUpdate(link, newPrice, oldPrice);
+
         if (newPrice !== null && newPrice < oldPrice) {
             console.log(`Price drop detected! Updating from ₹${oldPrice} to ₹${newPrice}`);
             await db.run(`UPDATE prices SET price = ? WHERE id = ?`, [newPrice, id]);
+
+            // send the price update details to kafka
+            await sendPriceUpdate(link, newPrice, oldPrice);
+
         }
     }
 

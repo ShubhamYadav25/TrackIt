@@ -110,5 +110,5 @@
   },
   "include": [
     "src/**/*.ts"
-  ]
+, "src/producer/priceProducer.JS", "src/jobs/trackerJob.js"  ]
 }

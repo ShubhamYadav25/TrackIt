@@ -25,7 +25,7 @@ const sendPriceUpdate = async (link, newPrice, oldPrice) => {
     messages: [{ value: JSON.stringify(message) }],
   });
 
-  console.log(`✅ Sent price update to Kafka: ${JSON.stringify(message)}`);
+  console.log(`Sent price update to Kafka: ${JSON.stringify(message)}`);
 };
 
 // Initialize producer on startup

@@ -7,13 +7,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Flipkart Price Tracker</h1>
-        <input type="text" id="flipkartUrl" placeholder="Enter Flipkart Product URL" />
-        <button id="trackButton">Track Price</button>
-        <p id="responseMessage"></p>
+    <div class="flip-container">
+        <div class="flip-card-inner">
+            <!-- Front Side (Price Tracker) -->
+            <div class="flip-card-front">
+                <h1>Flipkart Price Tracker</h1>
+                <input type="text" id="flipkartUrl" placeholder="Enter Flipkart Product URL" />
+                <button id="trackButton">Track Price</button>
+                <button id="createAlertButton">Create Alert</button> 
+                <p id="responseMessage"></p>
+            </div>
+
+            <!-- Back Side (Create Alert) -->
+            <div class="flip-card-back">
+                <h1>Create Alert</h1>
+                <input type="text" id="productName" placeholder="Product Name" />
+                <input type="text" id="productLink" placeholder="Product Link" />
+                <input type="text" id="phoneNumber" placeholder="Phone Number" />
+                <button id="saveAlertButton">Save Alert</button>
+                <button id="cancelAlertButton">Cancel</button>
+            </div>
+        </div>
     </div>
 
-    <script src="./script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

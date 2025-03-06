@@ -40,8 +40,8 @@ TrackIt is a smart system that **monitors product prices** across different plat
    npm install
    ```
 3. Run kafka
-   ```env
-  docker-compose up -d
+   ```bash
+     docker-compose up -d
    ```
 4. Start the backend server:
    ```bash

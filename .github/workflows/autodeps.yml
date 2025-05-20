@@ -15,5 +15,5 @@ jobs:
       - name: Run Dependency Installer
         uses: ShubhamYadav25/AutoDeps@v1.0.0
         with:
-          working-directory: './my-app'
+          working-directory: './'
           dry-run: false

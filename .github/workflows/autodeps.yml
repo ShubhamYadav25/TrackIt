@@ -1,0 +1,19 @@
+name: Dependency Installer Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  install-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Dependency Installer
+        uses: ShubhamYadav25/AutoDeps@v1.0.0
+        with:
+          working-directory: './my-app'
+          dry-run: false

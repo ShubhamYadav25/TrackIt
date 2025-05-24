@@ -3,7 +3,7 @@ name: Dependency Installer Action
 on:
   push:
     branches:
-      - main
+      - master # change this to main if no issue
 
 jobs:
   install-dependencies:

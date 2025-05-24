@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to validate'
+        required: false
+        default: '1.0.0'
 
 jobs:
   validate:
@@ -15,4 +20,4 @@ jobs:
       - name: Validate SemVer string
         uses: ShubhamYadav25/validate-semver@v1.0.0
         with:
-          version: '1.4.0'
+          version: ${{ github.event.inputs.version || '1.0.0' }}

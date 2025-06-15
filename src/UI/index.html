@@ -3,33 +3,1886 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrackIt - Flipkart Price Tracker</title>
-    <link rel="stylesheet" href="style.css">
+    <title>TrackIt - Price Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #48A6A7;
+            --secondary-color: #2973B2;
+            --dark-color: #2C3E50;
+            --light-color: #F2EFE7;
+            --accent-color: #E74C3C;
+            --text-color: #333;
+            --text-light: #fff;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --nav-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            height: 70px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-decoration: none;
+        }
+
+        .logo-main {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .logo-main span {
+            color: var(--secondary-color);
+        }
+
+        .logo-main .dot {
+            color: var(--accent-color);
+            font-size: 2.2rem;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        /* Updated Hero Section with Price Chart */
+        .hero {
+            height: auto;
+            min-height: 100vh;
+            padding: 6rem 10% 4rem;
+            background: linear-gradient(135deg, rgba(72, 166, 167, 0.1) 0%, rgba(41, 115, 178, 0.1) 100%);
+            margin-top: var(--nav-height);
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            gap: 3rem;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--text-color);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 4px 15px rgba(72, 166, 167, 0.3);
+        }
+
+        .chart-illustration {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        #priceChart {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .chart-label {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .chart-label.high {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--accent-color);
+        }
+
+        .chart-label.low {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .chart-label.current {
+            background: rgba(72, 166, 167, 0.2);
+            color: var(--primary-color);
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--text-color);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 4px 15px rgba(72, 166, 167, 0.3);
+        }
+
+        .cta-button:hover {
+            background-color: transparent;
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(72, 166, 167, 0.4);
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 8rem 10%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.8rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Enhanced Services Section */
+        #services {
+            background-color: #f9fbfd;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNDEsMjQ1LDI0OSwwLjEpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+PC9zdmc+') repeat;
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .services-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .service-tab {
+            padding: 1.2rem 1.5rem;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .service-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(72, 166, 167, 0.1), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .service-tab:hover::before {
+            left: 100%;
+        }
+
+        .service-tab.active {
+            border-left: 4px solid var(--primary-color);
+            background: linear-gradient(to right, rgba(72, 166, 167, 0.05), transparent);
+            color: var(--primary-color);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(72, 166, 167, 0.1);
+        }
+
+        .service-tab:hover:not(.active) {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-tab-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .service-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            min-height: 500px;
+            position: relative;
+        }
+
+        .service-platform-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .platform-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f5f7fa, #e4e8eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .platform-logo img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .platform-info h3 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-info p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .tracker-container {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .tracker-container.active {
+            display: block;
+        }
+
+        .tracker-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid #eaeef2;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(72, 166, 167, 0.1);
+            border-color: rgba(72, 166, 167, 0.3);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(72, 166, 167, 0.1), rgba(41, 115, 178, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .feature-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .tracker-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeef2;
+            margin-top: 2rem;
+        }
+
+        .tracker-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .tracker-card h3 .icon {
+            color: var(--primary-color);
+        }
+
+        .tracker-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background-color: #f9fbfd;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(72, 166, 167, 0.2);
+            background-color: white;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tracker-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tracker-button.primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 166, 167, 0.3);
+        }
+
+        .tracker-button.secondary {
+            background: white;
+            color: var(--dark-color);
+            border: 1px solid #ddd;
+        }
+
+        .tracker-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .tracker-button.primary:hover {
+            background: #3d9192;
+            box-shadow: 0 6px 20px rgba(72, 166, 167, 0.4);
+        }
+
+        .tracker-button.secondary:hover {
+            background: #f5f7fa;
+        }
+
+        .response-message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .response-message.success {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            display: block;
+        }
+
+        .response-message.error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            display: block;
+        }
+
+        .price-display {
+            display: none;
+            margin-top: 2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #eaeef2;
+        }
+
+        .price-display.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .price-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .price-item {
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .price-item h4 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .current-price .price-value {
+            color: var(--primary-color);
+        }
+
+        .lowest-price .price-value {
+            color: #2ecc71;
+        }
+
+        .highest-price .price-value {
+            color: var(--accent-color);
+        }
+
+        .price-history-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(72, 166, 167, 0.1);
+            color: var(--primary-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .price-history-btn:hover {
+            background: rgba(72, 166, 167, 0.2);
+        }
+
+        .platform-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #eaeef2;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pricing Section */
+        #pricing {
+            background: linear-gradient(135deg, rgba(72, 166, 167, 0.05) 0%, rgba(41, 115, 178, 0.05) 100%);
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--primary-color);
+            position: relative;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .price {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: #777;
+            font-weight: normal;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin-bottom: 2.5rem;
+        }
+
+        .pricing-card ul li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.8rem;
+        }
+
+        .pricing-card ul li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        .pricing-button {
+            display: inline-block;
+            padding: 0.9rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--primary-color);
+            width: 100%;
+        }
+
+        .pricing-button:hover {
+            background-color: transparent;
+            color: var(--primary-color);
+        }
+
+        /* About Section */
+        #about {
+            background-color: white;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .about-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .about-image img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .about-image img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Contact Section */
+        #contact {
+            background: linear-gradient(135deg, rgba(72, 166, 167, 0.05) 0%, rgba(41, 115, 178, 0.05) 100%);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 4rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-right: 1.5rem;
+            margin-top: 0.3rem;
+        }
+
+        .contact-text h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .contact-text p {
+            color: #666;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(72, 166, 167, 0.2);
+        }
+
+        .submit-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(72, 166, 167, 0.3);
+        }
+
+        .submit-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(41, 115, 178, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo .logo-main {
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .footer-logo .logo-sub {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .social-links {
+            margin: 2rem 0;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 1.2rem;
+            margin: 0 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            section {
+                padding: 6rem 5%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .hero-text {
+                text-align: center;
+                max-width: 100%;
+            }
+            
+            .chart-illustration {
+                max-width: 100%;
+                margin-top: 2rem;
+            }
+
+            .services-container {
+                grid-template-columns: 1fr;
+            }
+
+            .service-tabs {
+                position: static;
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 1rem;
+            }
+
+            .service-tab {
+                min-width: 200px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .service-tab.active {
+                border-left: none;
+                border-bottom: 3px solid var(--primary-color);
+                transform: translateY(0);
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .about-image {
+                order: -1;
+                margin-bottom: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: var(--nav-height);
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - var(--nav-height));
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 3rem;
+                transition: var(--transition);
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 1rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .price-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .price-item {
+                text-align: left;
+                padding: 0;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="flip-container">
-        <div class="flip-card-inner">
-            <!-- Front Side (Price Tracker) -->
-            <div class="flip-card-front">
-                <h1>Flipkart Price Tracker</h1>
-                <input type="text" id="flipkartUrl" placeholder="Enter Flipkart Product URL" />
-                <button id="trackButton">Track Price</button>
-                <button id="createAlertButton">Create Alert</button> 
-                <p id="responseMessage"></p>
-            </div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#home" class="logo">
+            <div class="logo-main">Track<span>It</span><span class="dot">.</span></div>
+            <div class="logo-sub">BY BLUUHORIZON</div>
+        </a>
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-            <!-- Back Side (Create Alert) -->
-            <div class="flip-card-back">
-                <h1>Create Alert</h1>
-                <input type="text" id="productName" placeholder="Product Name" />
-                <input type="text" id="productLink" placeholder="Product Link" />
-                <input type="text" id="phoneNumber" placeholder="Phone Number" />
-                <button id="saveAlertButton">Save Alert</button>
-                <button id="cancelAlertButton">Cancel</button>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>Never Overpay Again with Smart Price Tracking</h1>
+                <p>Track prices across all major e-commerce platforms and get instant notifications when prices drop. Save money effortlessly with our powerful tracking technology.</p>
+                <a href="#services" class="cta-button">Start Tracking Now</a>
+            </div>
+            
+            <!-- Animated Price Chart -->
+            <div class="chart-illustration">
+                <div class="chart-container">
+                    <canvas id="priceChart" width="400" height="250"></canvas>
+                    <div class="chart-labels">
+                        <div class="chart-label high">₹<span id="highPrice">5,999</span></div>
+                        <div class="chart-label low">₹<span id="lowPrice">4,299</span></div>
+                        <div class="chart-label current">₹<span id="currentPrice">4,799</span></div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <script src="script.js"></script>
+    <!-- Enhanced Services Section -->
+    <section id="services">
+        <div class="section-title">
+            <h2>Our Services</h2>
+            <p>Track prices across all major platforms with precision</p>
+        </div>
+        <div class="services-container">
+            <div class="service-tabs">
+                <div class="service-tab active" data-tab="flipkart">
+                    <div class="service-tab-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div>Flipkart Tracker</div>
+                </div>
+                <div class="service-tab" data-tab="myntra">
+                    <div class="service-tab-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div>Myntra Tracker</div>
+                </div>
+                <div class="service-tab" data-tab="meesho">
+                    <div class="service-tab-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div>Meesho Tracker</div>
+                </div>
+                <div class="service-tab" data-tab="amazon">
+                    <div class="service-tab-icon">
+                        <i class="fab fa-amazon"></i>
+                    </div>
+                    <div>Amazon Tracker</div>
+                </div>
+                <div class="service-tab" data-tab="ajio">
+                    <div class="service-tab-icon">
+                        <i class="fas fa-shopping-basket"></i>
+                    </div>
+                    <div>AJIO Tracker</div>
+                </div>
+            </div>
+            <div class="service-content">
+                <!-- Flipkart Tracker -->
+                <div class="tracker-container active" id="flipkart-tracker">
+                    <div class="service-platform-header">
+                        <div class="platform-logo">
+                            <img src="https://logo.clearbit.com/flipkart.com" alt="Flipkart">
+                        </div>
+                        <div class="platform-info">
+                            <h3>Flipkart Price Tracker</h3>
+                            <p>Monitor prices on India's leading e-commerce platform</p>
+                        </div>
+                    </div>
+
+                    <div class="platform-stats">
+                        <div class="stat-card">
+                            <div class="stat-value">1.2M+</div>
+                            <div class="stat-label">Products Tracked</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">85%</div>
+                            <div class="stat-label">Accuracy Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">24/7</div>
+                            <div class="stat-label">Monitoring</div>
+                        </div>
+                    </div>
+
+                    <div class="tracker-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h4>Instant Alerts</h4>
+                            <p>Get notified immediately when prices drop below your target on Flipkart.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h4>Price History</h4>
+                            <p>View comprehensive price trends and historical data for any product.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <h4>Discount Tracking</h4>
+                            <p>Monitor real discounts versus fake price hikes before sales.</p>
+                        </div>
+                    </div>
+
+                    <div class="tracker-card">
+                        <h3><i class="fas fa-search icon"></i> Track a Product</h3>
+                        <div class="tracker-form">
+                            <div class="form-group">
+                                <label for="flipkart-url">Product URL</label>
+                                <i class="fas fa-link input-icon"></i>
+                                <input type="text" id="flipkart-url" placeholder="https://www.flipkart.com/product-name/p/...">
+                            </div>
+                            <div class="form-actions">
+                                <button class="tracker-button primary" id="track-flipkart">
+                                    <i class="fas fa-search"></i> Track Price
+                                </button>
+                                <button class="tracker-button secondary" id="create-alert">
+                                    <i class="fas fa-bell"></i> Create Alert
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="response-message" id="flipkart-response"></div>
+
+                        <div class="price-display" id="flipkart-price-display">
+                            <div class="price-info">
+                                <div class="price-item current-price">
+                                    <h4>Current Price</h4>
+                                    <div class="price-value">₹4,799</div>
+                                </div>
+                                <div class="price-item lowest-price">
+                                    <h4>Lowest Price</h4>
+                                    <div class="price-value">₹4,299</div>
+                                </div>
+                                <div class="price-item highest-price">
+                                    <h4>Highest Price</h4>
+                                    <div class="price-value">₹5,999</div>
+                                </div>
+                            </div>
+                            <a href="#" class="price-history-btn">
+                                <i class="fas fa-history"></i> View Price History (30 Days)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Myntra Tracker -->
+                <div class="tracker-container" id="myntra-tracker">
+                    <div class="service-platform-header">
+                        <div class="platform-logo">
+                            <img src="https://logo.clearbit.com/myntra.com" alt="Myntra">
+                        </div>
+                        <div class="platform-info">
+                            <h3>Myntra Price Tracker</h3>
+                            <p>Never miss a fashion deal on India's top clothing platform</p>
+                        </div>
+                    </div>
+
+                    <div class="tracker-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-tshirt"></i>
+                            </div>
+                            <h4>Fashion Focused</h4>
+                            <p>Specialized tracking for clothing, footwear, and accessories.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <h4>Sale Alerts</h4>
+                            <p>Get early notifications for End of Season Sales and Big Fashion Days.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <h4>Stock Monitoring</h4>
+                            <p>Track availability of sizes and colors for popular items.</p>
+                        </div>
+                    </div>
+
+                    <div class="tracker-card">
+                        <h3><i class="fas fa-search icon"></i> Track a Product</h3>
+                        <div class="tracker-form">
+                            <div class="form-group">
+                                <label for="myntra-url">Product URL</label>
+                                <i class="fas fa-link input-icon"></i>
+                                <input type="text" id="myntra-url" placeholder="https://www.myntra.com/product-name">
+                            </div>
+                            <div class="form-actions">
+                                <button class="tracker-button primary">
+                                    <i class="fas fa-search"></i> Track Price
+                                </button>
+                                <button class="tracker-button secondary">
+                                    <i class="fas fa-bell"></i> Create Alert
+                                </button>
+                            </div>
+                        </div>
+                        <div class="response-message">
+                            Myntra price tracking coming soon - currently in development
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meesho Tracker -->
+                <div class="tracker-container" id="meesho-tracker">
+                    <div class="service-platform-header">
+                        <div class="platform-logo">
+                            <img src="https://logo.clearbit.com/meesho.com" alt="Meesho">
+                        </div>
+                        <div class="platform-info">
+                            <h3>Meesho Price Tracker</h3>
+                            <p>Track the best deals on India's fastest growing shopping app</p>
+                        </div>
+                    </div>
+
+                    <div class="tracker-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <h4>Budget Finds</h4>
+                            <p>Discover the lowest prices on everyday essentials and more.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h4>Flash Sale Alerts</h4>
+                            <p>Never miss limited-time offers with instant notifications.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h4>Shipping Tracking</h4>
+                            <p>Monitor delivery times and shipping costs.</p>
+                        </div>
+                    </div>
+
+                    <div class="tracker-card">
+                        <h3><i class="fas fa-search icon"></i> Track a Product</h3>
+                        <div class="tracker-form">
+                            <div class="form-group">
+                                <label for="meesho-url">Product URL</label>
+                                <i class="fas fa-link input-icon"></i>
+                                <input type="text" id="meesho-url" placeholder="https://www.meesho.com/product-name/p/...">
+                            </div>
+                            <div class="form-actions">
+                                <button class="tracker-button primary">
+                                    <i class="fas fa-search"></i> Track Price
+                                </button>
+                                <button class="tracker-button secondary">
+                                    <i class="fas fa-bell"></i> Create Alert
+                                </button>
+                            </div>
+                        </div>
+                        <div class="response-message">
+                            Meesho price tracking coming soon - currently in development
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amazon Tracker -->
+                <div class="tracker-container" id="amazon-tracker">
+                    <div class="service-platform-header">
+                        <div class="platform-logo">
+                            <img src="https://logo.clearbit.com/amazon.in" alt="Amazon">
+                        </div>
+                        <div class="platform-info">
+                            <h3>Amazon Price Tracker</h3>
+                            <p>Monitor prices on the world's largest online marketplace</p>
+                        </div>
+                    </div>
+
+                    <div class="tracker-card">
+                        <h3><i class="fas fa-search icon"></i> Track a Product</h3>
+                        <div class="response-message">
+                            Amazon price tracking coming soon - currently in development
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AJIO Tracker -->
+                <div class="tracker-container" id="ajio-tracker">
+                    <div class="service-platform-header">
+                        <div class="platform-logo">
+                            <img src="https://logo.clearbit.com/ajio.com" alt="AJIO">
+                        </div>
+                        <div class="platform-info">
+                            <h3>AJIO Price Tracker</h3>
+                            <p>Never miss a deal on Reliance's premium fashion platform</p>
+                        </div>
+                    </div>
+
+                    <div class="tracker-card">
+                        <h3><i class="fas fa-search icon"></i> Track a Product</h3>
+                        <div class="response-message">
+                            AJIO price tracking coming soon - currently in development
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing">
+        <div class="section-title">
+            <h2>Pricing Plans</h2>
+            <p>Choose the perfect plan for your needs</p>
+        </div>
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <h3>Basic</h3>
+                <div class="price">$0 <span>/ month</span></div>
+                <ul>
+                    <li>Track up to 5 products</li>
+                    <li>Daily price checks</li>
+                    <li>Email notifications</li>
+                    <li>Basic support</li>
+                </ul>
+                <a href="#" class="pricing-button">Get Started</a>
+            </div>
+            <div class="pricing-card featured">
+                <div class="featured-badge">Popular</div>
+                <h3>Pro</h3>
+                <div class="price">$9.99 <span>/ month</span></div>
+                <ul>
+                    <li>Track up to 50 products</li>
+                    <li>Hourly price checks</li>
+                    <li>SMS & Email notifications</li>
+                    <li>Priority support</li>
+                    <li>Price history charts</li>
+                </ul>
+                <a href="#" class="pricing-button">Get Started</a>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">$29.99 <span>/ month</span></div>
+                <ul>
+                    <li>Unlimited product tracking</li>
+                    <li>Real-time monitoring</li>
+                    <li>All notification methods</li>
+                    <li>24/7 dedicated support</li>
+                    <li>Advanced analytics</li>
+                    <li>API access</li>
+                </ul>
+                <a href="#" class="pricing-button">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="section-title">
+            <h2>About Us</h2>
+            <p>Our mission is to help you save money</p>
+        </div>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Our Story</h3>
+                <p>Founded in 2023, TrackIt was born out of frustration with missing the best deals online. Our team of price tracking enthusiasts set out to create a solution that would help shoppers get the best prices without constantly checking websites.</p>
+                <p>Today, we're proud to serve thousands of customers who rely on our accurate price tracking and timely alerts to save money on their online purchases.</p>
+                <p>Our mission is simple: to help you shop smarter by ensuring you never overpay for the products you love.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Our Team">
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="section-title">
+            <h2>Contact Us</h2>
+            <p>We'd love to hear from you</p>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h3>Address</h3>
+                        <p>Noida Sector 62, Delhi, India</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h3>Phone</h3>
+                        <p>+91 7887036667</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h3>Email</h3>
+                        <p>support@trackit.com</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h3>Working Hours</h3>
+                        <p>Monday - Friday: 9am - 6pm<br>Saturday: 10am - 4pm</p>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form">
+                <form>
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" placeholder="Enter subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" rows="5" placeholder="Enter your message"></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-main">Track<span>It</span><span class="dot">.</span></div>
+                <div class="logo-sub">BY BLUUHORIZON</div>
+            </div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <p class="copyright">&copy; 2023 TrackIt. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Animated Price Chart
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        
+        // Generate random price data
+        function generatePriceData() {
+            const basePrice = 4500;
+            const data = [];
+            for (let i = 0; i < 6; i++) {
+                // Random fluctuation between -15% to +15%
+                const fluctuation = (Math.random() * 0.3) - 0.15;
+                data.push(Math.round(basePrice * (1 + fluctuation)));
+            }
+            return data;
+        }
+        
+        // Update price labels
+        function updatePriceLabels(data) {
+            const high = Math.max(...data);
+            const low = Math.min(...data);
+            const current = data[data.length - 1];
+            
+            document.getElementById('highPrice').textContent = high.toLocaleString('en-IN');
+            document.getElementById('lowPrice').textContent = low.toLocaleString('en-IN');
+            document.getElementById('currentPrice').textContent = current.toLocaleString('en-IN');
+            
+            // Highlight if current price is near high or low
+            const currentLabel = document.querySelector('.chart-label.current');
+            if (current <= low * 1.1) {
+                currentLabel.style.backgroundColor = 'rgba(46, 204, 113, 0.2)';
+                currentLabel.style.color = '#2ecc71';
+            } else if (current >= high * 0.9) {
+                currentLabel.style.backgroundColor = 'rgba(231, 76, 60, 0.2)';
+                currentLabel.style.color = 'var(--accent-color)';
+            } else {
+                currentLabel.style.backgroundColor = 'rgba(72, 166, 167, 0.2)';
+                currentLabel.style.color = 'var(--primary-color)';
+            }
+        }
+        
+        // Initial data
+        let chartData = generatePriceData();
+        
+        // Create chart
+        const priceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Product Price',
+                    data: chartData,
+                    borderColor: '#48A6A7',
+                    backgroundColor: 'rgba(72, 166, 167, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#48A6A7',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 2000,
+                    easing: 'easeInOutQuad'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Price: ₹' + context.raw.toLocaleString('en-IN');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: Math.min(...chartData) * 0.9,
+                        max: Math.max(...chartData) * 1.1,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value.toLocaleString('en-IN');
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Update chart with new data every 5 seconds
+        function updateChart() {
+            const newData = generatePriceData();
+            priceChart.data.datasets[0].data = newData;
+            priceChart.options.scales.y.min = Math.min(...newData) * 0.9;
+            priceChart.options.scales.y.max = Math.max(...newData) * 1.1;
+            priceChart.update();
+            updatePriceLabels(newData);
+        }
+        
+        // Initial update
+        updatePriceLabels(chartData);
+        
+        // Start animation loop
+        setInterval(updateChart, 5000);
+        
+        // Add hover effect to points
+        priceChart.canvas.onmousemove = function(evt) {
+            const points = priceChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, false);
+            if (points.length) {
+                priceChart.data.datasets[0].pointRadius = points[0].index === priceChart.data.datasets[0].data.length - 1 ? 7 : 5;
+                priceChart.update();
+            }
+        };
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            hamburger.innerHTML = navLinks.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 70,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Enhanced Services Tab Functionality
+        const serviceTabs = document.querySelectorAll('.service-tab');
+        const trackerContainers = document.querySelectorAll('.tracker-container');
+
+        serviceTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and containers
+                serviceTabs.forEach(t => t.classList.remove('active'));
+                trackerContainers.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding tracker
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tracker`).classList.add('active');
+            });
+        });
+
+        // Flipkart Tracker Functionality
+        const trackFlipkartBtn = document.getElementById('track-flipkart');
+        const createAlertBtn = document.getElementById('create-alert');
+        const flipkartResponse = document.getElementById('flipkart-response');
+        const priceDisplay = document.getElementById('flipkart-price-display');
+
+        trackFlipkartBtn.addEventListener('click', function() {
+            const url = document.getElementById('flipkart-url').value.trim();
+            
+            if (!url) {
+                flipkartResponse.textContent = 'Please enter a Flipkart product URL';
+                flipkartResponse.className = 'response-message error';
+                return;
+            }
+
+            if (!url.includes('flipkart.com')) {
+                flipkartResponse.textContent = 'Please enter a valid Flipkart product URL';
+                flipkartResponse.className = 'response-message error';
+                return;
+            }
+
+            // Simulate API call
+            flipkartResponse.textContent = 'Tracking price for this product...';
+            flipkartResponse.className = 'response-message';
+            
+            // Hide previous price display if any
+            priceDisplay.classList.remove('active');
+
+            setTimeout(() => {
+                // Generate random price data
+                const currentPrice = Math.floor(4000 + Math.random() * 2000);
+                const lowestPrice = Math.floor(currentPrice * 0.85);
+                const highestPrice = Math.floor(currentPrice * 1.25);
+                
+                // Update price display
+                document.querySelector('.current-price .price-value').textContent = `₹${currentPrice.toLocaleString('en-IN')}`;
+                document.querySelector('.lowest-price .price-value').textContent = `₹${lowestPrice.toLocaleString('en-IN')}`;
+                document.querySelector('.highest-price .price-value').textContent = `₹${highestPrice.toLocaleString('en-IN')}`;
+                
+                // Show results
+                flipkartResponse.textContent = `Success! Price data retrieved for this product.`;
+                flipkartResponse.className = 'response-message success';
+                priceDisplay.classList.add('active');
+            }, 1500);
+        });
+
+        createAlertBtn.addEventListener('click', function() {
+            const url = document.getElementById('flipkart-url').value.trim();
+            
+            if (!url) {
+                flipkartResponse.textContent = 'Please enter a product URL first';
+                flipkartResponse.className = 'response-message error';
+                return;
+            }
+
+            if (!url.includes('flipkart.com')) {
+                flipkartResponse.textContent = 'Please enter a valid Flipkart product URL';
+                flipkartResponse.className = 'response-message error';
+                return;
+            }
+
+            // In a real app, this would open a modal or navigate to alert creation
+            flipkartResponse.textContent = 'Redirecting to price alert creation...';
+            flipkartResponse.className = 'response-message';
+            
+            setTimeout(() => {
+                flipkartResponse.innerHTML = `Price alert creation for Flipkart products is coming soon!<br>
+                                            In the meantime, you can manually track prices.`;
+                flipkartResponse.className = 'response-message';
+            }, 1000);
+        });
+    </script>
 </body>
 </html>

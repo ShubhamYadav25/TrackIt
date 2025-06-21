@@ -16,6 +16,13 @@
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Track Job",
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${workspaceFolder}\\src\\jobs/trackerJob.js"
         }
     ]
 }

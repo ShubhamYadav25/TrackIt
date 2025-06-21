@@ -20,7 +20,7 @@ interface TrackRequestBody {
 
 interface CreateAlertBody {
     productName: string;
-    productLink:string;
+    productUrl: string;
     phoneNumber: string;
 };
 
@@ -42,14 +42,14 @@ app.post("/track", async (req: Request<{}, {}, TrackRequestBody>, res: Response)
 });
 
 app.post("/create-alert", async (req: Request<{}, {}, CreateAlertBody>, res: Response) => {
-    const { productName, productLink, phoneNumber } = req.body;
+    const { productName, productUrl, phoneNumber } = req.body;
 
-    if (!productName || !productLink || !phoneNumber) {
+    if (!productName || !productUrl || !phoneNumber) {
         // return res.status(400).json({ error: "All fields are required" });
     }
 
     try {
-        saveAlertInfo(productName, productLink,  phoneNumber);
+        saveAlertInfo(productName, productUrl,  phoneNumber);
         res.json({ message: "Alert saved successfully!" });
     } catch (error) {
         res.status(500).json({ error: "Failed to save alert" });

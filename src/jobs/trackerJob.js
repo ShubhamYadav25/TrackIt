@@ -7,7 +7,7 @@ const { sendPriceUpdate } = require('../kafka-producer/priceChangesProducer.js')
 // Initialize database
 async function getDb() {
     return open({
-        filename: '../../prices.db',
+        filename: 'prices.db',
         driver: sqlite3.Database
     });
 }
@@ -61,7 +61,7 @@ async function checkAndUpdatePrices() {
         // TESTING msg to kafka
         await sendPriceUpdate(link, newPrice, oldPrice);
 
-        if (newPrice !== null && newPrice < oldPrice) {
+        if (newPrice !== null && newPrice == oldPrice) {
             console.log(`Price drop detected! Updating from ₹${oldPrice} to ₹${newPrice}`);
             await db.run(`UPDATE prices SET price = ? WHERE id = ?`, [newPrice, id]);
 

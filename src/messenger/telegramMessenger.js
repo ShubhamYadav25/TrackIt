@@ -1,10 +1,14 @@
 const axios = require("axios");
 
 // bot's API toke
-const botToken = "----------------------------";
+// const botToken = "----------------------------";
+	const botToken = "7855582689:AAF0jYq55pQdMkfVUNYYAueXKW-1aIxx2Qs";
+
 
 // GroupId
-const chatId = "-----------------------------";
+// const chatId = "-----------------------------";
+	const chatId = "-1002449524899";
+
 
 // Send message to the Telegram group
 async function sendTelegramMessage(message) {

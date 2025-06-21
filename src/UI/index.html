@@ -1818,7 +1818,7 @@
         const flipkartResponse = document.getElementById('flipkart-response');
         const priceDisplay = document.getElementById('flipkart-price-display');
 
-        trackFlipkartBtn.addEventListener('click', function() {
+        trackFlipkartBtn.addEventListener('click', async function() {
             const url = document.getElementById('flipkart-url').value.trim();
             
             if (!url) {
@@ -1833,21 +1833,34 @@
                 return;
             }
 
-            // Simulate API call
-            flipkartResponse.textContent = 'Tracking price for this product...';
-            flipkartResponse.className = 'response-message';
+            try {
+                const response = await fetch("http://localhost:3000/track", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ url: url }),
+                });
+
+                const data = await response.json();
+                flipkartResponse.textContent = data.message.match(/₹\d+/)?.[0] || data.error;
+                flipkartResponse.className = 'response-message';
+            
+            } catch (error) {
+                flipkartResponse.textContent = "Error connecting to the server!";
+            }
             
             // Hide previous price display if any
             priceDisplay.classList.remove('active');
 
             setTimeout(() => {
                 // Generate random price data
-                const currentPrice = Math.floor(4000 + Math.random() * 2000);
-                const lowestPrice = Math.floor(currentPrice * 0.85);
-                const highestPrice = Math.floor(currentPrice * 1.25);
+                const currentPrice = flipkartResponse.textContent;
+                const lowestPrice = Math.floor(currentPrice * 0.85); // TODO
+                const highestPrice = Math.floor(currentPrice * 1.25); // TODO
                 
                 // Update price display
-                document.querySelector('.current-price .price-value').textContent = `₹${currentPrice.toLocaleString('en-IN')}`;
+                document.querySelector('.current-price .price-value').textContent = currentPrice;
                 document.querySelector('.lowest-price .price-value').textContent = `₹${lowestPrice.toLocaleString('en-IN')}`;
                 document.querySelector('.highest-price .price-value').textContent = `₹${highestPrice.toLocaleString('en-IN')}`;
                 
@@ -1858,28 +1871,42 @@
             }, 1500);
         });
 
-        createAlertBtn.addEventListener('click', function() {
-            const url = document.getElementById('flipkart-url').value.trim();
-            
-            if (!url) {
+        createAlertBtn.addEventListener('click', async function() {
+            const productUrl = document.getElementById('flipkart-url').value.trim();
+
+            // TODO
+            const productName = "Shubham";
+            const phoneNumber = "12";
+            const targetPrice = 100;
+
+            if (!productUrl) {
                 flipkartResponse.textContent = 'Please enter a product URL first';
                 flipkartResponse.className = 'response-message error';
                 return;
             }
 
-            if (!url.includes('flipkart.com')) {
+            if (!productUrl.includes('flipkart.com')) {
                 flipkartResponse.textContent = 'Please enter a valid Flipkart product URL';
                 flipkartResponse.className = 'response-message error';
                 return;
             }
+            console.log(productUrl);
+            try {
+                await fetch("/create-alert", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productName, productUrl, phoneNumber }),
+                });
+            } catch (error) {
+                flipkartResponse.textContent = "Error connecting to the server!";
+            }
 
             // In a real app, this would open a modal or navigate to alert creation
-            flipkartResponse.textContent = 'Redirecting to price alert creation...';
+            flipkartResponse.textContent = 'Success! Alert created for the product link.';
             flipkartResponse.className = 'response-message';
             
             setTimeout(() => {
-                flipkartResponse.innerHTML = `Price alert creation for Flipkart products is coming soon!<br>
-                                            In the meantime, you can manually track prices.`;
+                flipkartResponse.innerHTML = `PSuccess! Alert created for the product link.`;
                 flipkartResponse.className = 'response-message';
             }, 1000);
         });
